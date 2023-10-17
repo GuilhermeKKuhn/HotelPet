@@ -11,7 +11,7 @@ public class Cachorro extends Animal {
 
     Scanner scanner = new Scanner(System.in);
 
-    public Cachorro(String nome, int idade, Pessoa tutor) {
+    public Cachorro(String nome, int idade, String tutor) {
         super("Cachorro", nome, idade, 1, tutor);
 
     }

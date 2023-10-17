@@ -10,7 +10,7 @@ public class Gato extends Animal {
 
     Scanner scanner = new Scanner(System.in);
 
-    public Gato(String nome, int idade, Pessoa tutor) {
+    public Gato(String nome, int idade, String tutor) {
         super("Gato", nome, idade, 2, tutor);
     }
 

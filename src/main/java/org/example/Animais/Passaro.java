@@ -13,7 +13,7 @@ public class Passaro extends Animal {
     public Passaro(){
     }
 
-    public Passaro(String nome, int idade, Pessoa tutor) {
+    public Passaro(String nome, int idade, String tutor) {
         super("Passaro", nome, idade, 3, tutor);
     }
 

@@ -9,9 +9,9 @@ public class Animal {
    private String nome;
    private int idade;
    private int andar;
-   private Pessoa tutor;
+   private String tutor;
 
-    public Animal(String especie, String nome, int idade, int andar, Pessoa tutor) {
+    public Animal(String especie, String nome, int idade, int andar, String tutor) {
         this.especie = especie;
         this.nome = nome;
         this.idade = idade;
@@ -56,11 +56,11 @@ public class Animal {
         this.andar = andar;
     }
 
-    public Pessoa getTutor() {
+    public String getTutor() {
         return tutor;
     }
 
-    public void setTutor(Pessoa tutor) {
+    public void setTutor(String tutor) {
         this.tutor = tutor;
     }
 }
