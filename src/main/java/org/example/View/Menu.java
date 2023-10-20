@@ -7,7 +7,6 @@ import org.example.Pessoas.Funcionario;
 import org.example.Pessoas.Tutor;
 import org.example.conexao.AnimalDAO;
 import org.example.conexao.CheckInDAO;
-import org.example.conexao.CheckOutDAO;
 import org.example.conexao.PessoaDAO;
 
 import java.util.Scanner;
@@ -20,12 +19,12 @@ public class Menu {
     PessoaDAO pessoaDAO = new PessoaDAO();
     AnimalDAO animalDAO = new AnimalDAO();
     CheckInDAO checkInDAO = new CheckInDAO();
-    CheckOutDAO checkOutDAO = new CheckOutDAO();
+
 
     public void menuPrincipal(){
         System.out.println("========== MENU PRINCIPAL ==========");
-        System.out.println("1 -- Realizar Check-in");
-        System.out.println("2 -- Realizar Check-out");
+        System.out.println("1 -- Check-in");
+        System.out.println("2 -- Check-out");
         System.out.println("3 -- Cadastro");
         System.out.println("4 -- Sair");
         System.out.print("Informe uma opção: ");
@@ -33,41 +32,141 @@ public class Menu {
 
         switch (opcao) {
             case 1 -> {
-                System.out.println("========== REALIZAR CHECK-IN ==========");
-                animalDAO.listar();
-                System.out.print("digite o nome do animal que deseja fazer check-in: ");
-                String opcaoCheckIn = scanner.next();
-                System.out.println("confirme os dados abaixo");
-                animalDAO.listarAnimal(opcaoCheckIn);
-                System.out.println("Realizar Check-in?");
-                System.out.println("1 -- SIM");
-                System.out.println("2 -- NÂO");
-                int realizarCheckIn = scanner.nextInt();
-                if (realizarCheckIn == 1) {
-                    checkInDAO.inserir(opcaoCheckIn);
-                    menuPrincipal();
-                } else if (realizarCheckIn == 2) {
-                    System.out.println("check-in cancelado");
-                    menuPrincipal();
-                }
+                System.out.println("========== CHECK-IN ==========");
+                System.out.println("1 -- realizar Check-in");
+                System.out.println("2 -- hospedes");
+                System.out.println("3 -- Voltar");
+                System.out.print("Informe uma opção: ");
+                int opcaoCheckin = scanner.nextInt();
+
+               //opção de realizar check-in
+               if (opcaoCheckin == 1){
+                   animalDAO.listar();
+                   System.out.print("digite o nome do animal que deseja fazer check-in: ");
+                   String opcaoCheckIn = scanner.next();
+
+                   if(animalDAO.verificaAnimal(opcaoCheckIn)) {
+                       System.out.println("confirme os dados abaixo");
+                       animalDAO.listarAnimal(opcaoCheckIn);
+                       System.out.println("Realizar Check-in?");
+                       System.out.println("1 -- SIM");
+                       System.out.println("2 -- NÂO");
+                       int realizarCheckIn = scanner.nextInt();
+                       if (realizarCheckIn == 1) {
+                           checkInDAO.inserir(opcaoCheckIn);
+                           menuPrincipal();
+                       } else if (realizarCheckIn == 2) {
+                           System.out.println("check-in cancelado");
+                           menuPrincipal();
+                       }
+                   }else{
+                       System.out.println("cadastro não encontrado");
+                       menuPrincipal();
+                   }
+               }
+               if(opcaoCheckin == 2){
+                   System.out.println("\nVerificar hospedes por:");
+                   System.out.println("1 - Nome");
+                   System.out.println("2 - Andar");
+                   System.out.print("selecione uma opção: ");
+                   int opcaoHospedes = scanner.nextInt();
+
+                   //verifica hospedes
+                   if (opcaoHospedes == 1){
+                       System.out.print("Digite o nome do Hospede que deseja buscar: ");
+                       String nomeHospede = scanner.next();
+
+                       if (checkInDAO.verificaPessoa(nomeHospede)){
+                           System.out.println("Esse animal esta hospedado");
+                           checkInDAO.listarCheckIn(nomeHospede);
+                           while(true){
+                               System.out.print("1 - voltar: ");
+                               int opcaoVoltar = scanner.nextInt();
+                               if (opcaoVoltar == 1){
+                                   menuPrincipal();
+                               }else{
+                                   System.out.println("digite uma opcao valida");
+                               }
+                           }
+                       }else{
+                           System.out.println("O Animal nao esta hospedado no Hotel");
+                           menuPrincipal();
+                       }
+                   } else if (opcaoHospedes == 2) {
+                       System.out.println("Digite o andar que deseja buscar hospedes: ");
+                       System.out.println("1º andar - cachorros");
+                       System.out.println("2º andar - gatos");
+                       System.out.println("3º andar - passaros");
+                       int andarHospede = scanner.nextInt();
+
+                       if (andarHospede == 1){
+                           System.out.println("Animais hospedados no " + andarHospede + "º andar");
+                           checkInDAO.listarCheckInPorEspecie("Cachorro");
+                           while(true){
+                               System.out.print("1 - voltar: ");
+                               int opcaoVoltar = scanner.nextInt();
+                               if (opcaoVoltar == 1){
+                                   menuPrincipal();
+                               }else{
+                                   System.out.println("digite uma opcao valida");
+                               }
+                           }
+                       } else if (andarHospede == 2){
+                           System.out.println("Animais hospedados no " + andarHospede + "º andar");
+                           checkInDAO.listarCheckInPorEspecie("Gato");
+                           while(true){
+                               System.out.print("1 - voltar: ");
+                               int opcaoVoltar = scanner.nextInt();
+                               if (opcaoVoltar == 1){
+                                   menuPrincipal();
+                               }else{
+                                   System.out.println("digite uma opcao valida");
+                               }
+                           }
+                       } else if (andarHospede == 3){
+                           System.out.println("Animais hospedados no " + andarHospede + "º andar");
+                           checkInDAO.listarCheckInPorEspecie("Passaro");
+                           while(true){
+                               System.out.print("1 - voltar: ");
+                               int opcaoVoltar = scanner.nextInt();
+                               if (opcaoVoltar == 1){
+                                   menuPrincipal();
+                               }else{
+                                   System.out.println("digite uma opcao valida");
+                               }
+                           }
+                       }else{
+                           System.out.println("Andar nao encontrado");
+                           menuPrincipal();
+                       }
+                   }
+               } else if (opcaoCheckin == 3) {
+                   menuPrincipal();
+               }
             }
+
+            //opção de check-out
             case 2 -> {
                 System.out.println("========== REALIZAR CHECK-OUT ==========");
                 checkInDAO.listar();
                 System.out.print("digite o nome do Animal que deseja fazer check-out: ");
                 String opcaoCheckOut = scanner.next();
-                System.out.println("confirme os dados abaixo");
-                checkInDAO.listarCheckIn(opcaoCheckOut);
-                System.out.println("Realizar Check-out?");
-                System.out.println("1 -- SIM");
-                System.out.println("2 -- NÂO");
-                int realizarCheckOut = scanner.nextInt();
-                if (realizarCheckOut == 1) {
-                    checkInDAO.remover(opcaoCheckOut);
-                    checkOutDAO.inserir(opcaoCheckOut);
-                    menuPrincipal();
-                } else if (realizarCheckOut == 2) {
-                    System.out.println("check-Out cancelado");
+                if(checkInDAO.verificaPessoa(opcaoCheckOut)) {
+                    System.out.println("confirme os dados abaixo");
+                    checkInDAO.listarCheckIn(opcaoCheckOut);
+                    System.out.println("Realizar Check-out?");
+                    System.out.println("1 -- SIM");
+                    System.out.println("2 -- NÂO");
+                    int realizarCheckOut = scanner.nextInt();
+                    if (realizarCheckOut == 1) {
+                        checkInDAO.remover(opcaoCheckOut);
+                        menuPrincipal();
+                    } else if (realizarCheckOut == 2) {
+                        System.out.println("check-Out cancelado");
+                        menuPrincipal();
+                    }
+                }else {
+                    System.out.println("check-in não encontrado!");
                     menuPrincipal();
                 }
             }

@@ -12,11 +12,10 @@ import org.example.Animais.Animal;
 
 
 public class AnimalDAO {
-    private final MongoClient mongoClient;
     private final MongoCollection<Document> animaisCollection;
 
     public AnimalDAO(){
-        mongoClient = Connection.connection();
+        MongoClient mongoClient = Connection.connection();
         MongoDatabase HotelPet = mongoClient.getDatabase("HotelPet");
         animaisCollection = HotelPet.getCollection("Animais");
     }
@@ -67,10 +66,6 @@ public class AnimalDAO {
         }
     }
 
-    public void close(){
-        mongoClient.close();
-    }
-
     public void excluir(String nome){
         if(verificaAnimal(nome)){
             animaisCollection.deleteOne(Filters.eq("Nome", nome));
@@ -80,9 +75,8 @@ public class AnimalDAO {
         }
     }
 
-    private boolean verificaAnimal(String nome) {
-        Document verifica = animaisCollection.find(Filters.eq("Nome", nome)).
-                projection(Projections.include("Nome")).first();
+    public boolean verificaAnimal(String nome) {
+        Document verifica = animaisCollection.find(Filters.eq("Nome", nome)).first();
         return verifica != null;
     }
 

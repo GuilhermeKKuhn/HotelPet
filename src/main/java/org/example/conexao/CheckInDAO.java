@@ -7,8 +7,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import org.bson.Document;
-import org.example.Animais.Animal;
-import org.example.Hotel.CheckIn;
+
 
 import java.util.Date;
 
@@ -24,7 +23,7 @@ public class CheckInDAO {
 
     public void listar(){
         MongoCursor<Document> cursor = checkInCollection.find().
-                projection(Projections.fields(Projections.include("Nome", "Especie", "Idade", "Tutor","Andar", "Data"))).iterator();
+                projection(Projections.fields(Projections.include("Nome", "Especie", "Idade", "Tutor","Andar", "Data Check-in"))).iterator();
 
         try{
             while(cursor.hasNext()){
@@ -34,7 +33,7 @@ public class CheckInDAO {
                 int idade = checkIn.getInteger("Idade");
                 String tutor = checkIn.getString("Tutor");
                 int andar = checkIn.getInteger("Andar");
-                Date data = checkIn.getDate("Data");
+                Date data = checkIn.getDate("Data Check-in");
 
                 System.out.println("Nome: " + nome + "\n" +
                         "Especie: " + especie + "\n" +
@@ -52,21 +51,16 @@ public class CheckInDAO {
     public void inserir(String nomeAnimal){
         AnimalDAO animal = new AnimalDAO();
         Document dadosAnimal = animal.buscarDadosDoAnimal(nomeAnimal);
+        Date dataCheckIn = new Date();
+        Document novoAnimalNaCheckIn = new Document("Nome", nomeAnimal)
+                .append("Especie", dadosAnimal.getString("Especie"))
+                .append("Idade", dadosAnimal.getInteger("Idade"))
+                .append("Tutor", dadosAnimal.getString("Tutor"))
+                .append("Andar", dadosAnimal.getInteger("Andar")).
+                append("Data Check-In", dataCheckIn);
 
-        if (dadosAnimal != null) {
-            Date dataCheckIn = new Date();
-            Document novoAnimalNaCheckIn = new Document("Nome", nomeAnimal)
-                    .append("Especie", dadosAnimal.getString("Especie"))
-                    .append("Idade", dadosAnimal.getInteger("Idade"))
-                    .append("Tutor", dadosAnimal.getString("Tutor"))
-                    .append("Andar", dadosAnimal.getInteger("Andar"))
-                    .append("Data", dataCheckIn);
-
-            checkInCollection.insertOne(novoAnimalNaCheckIn);
-            System.out.println("Animal " + nomeAnimal + " foi inserido na coleção de check-ins.");
-        } else {
-            System.out.println("Animal " + nomeAnimal + " não encontrado na coleção de animais.");
-        }
+        checkInCollection.insertOne(novoAnimalNaCheckIn);
+        System.out.println("Animal " + nomeAnimal + " fez o check-in.");
     }
 
     public void close(){
@@ -90,27 +84,46 @@ public class CheckInDAO {
 
     public void listarCheckIn(String name){
         MongoCursor<Document> cursor = checkInCollection.find(Filters.eq("Nome", name)).
-                projection(Projections.fields(Projections.include("Nome", "Especie", "Tutor", "Idade", "Andar", "Data"))).iterator();
+                projection(Projections.fields(Projections.include("Nome", "Especie", "Tutor", "Idade", "Andar", "Data Check-in"))).iterator();
 
-        Document checkOut = cursor.next();
-        String nome = checkOut.getString("Nome");
-        String esp = checkOut.getString("Especie");
-        String tutor = checkOut.getString("Tutor");
-        int idade = checkOut.getInteger("Idade");
-        int andar = checkOut.getInteger("Andar");
-        Date data = checkOut.getDate("Data");
+        Document checkIn = cursor.next();
+        String nome = checkIn.getString("Nome");
+        String esp = checkIn.getString("Especie");
+        String tutor = checkIn.getString("Tutor");
+        int idade = checkIn.getInteger("Idade");
+        int andar = checkIn.getInteger("Andar");
+        Date data = checkIn.getDate("Data Check-in");
 
         System.out.println("Nome: " + nome + "\n" +
                 "Especie: " + esp + "\n" +
                 "Tutor: " + tutor + "\n" +
                 "Idade: " + idade + "\n" +
-                "Especie: " + andar + "\n" +
+                "Andar: " + andar + "\n" +
+                "Data Check-in: " + data + "\n");
+    }
+
+    public void listarCheckInPorEspecie(String Especie){
+        MongoCursor<Document> cursor = checkInCollection.find(Filters.eq("Especie", Especie)).
+                projection(Projections.fields(Projections.include("Nome", "Especie", "Tutor", "Idade", "Andar", "Data Check-in"))).iterator();
+
+        Document checkIn = cursor.next();
+        String nome = checkIn.getString("Nome");
+        String esp = checkIn.getString("Especie");
+        String tutor = checkIn.getString("Tutor");
+        int idade = checkIn.getInteger("Idade");
+        int andar = checkIn.getInteger("Andar");
+        Date data = checkIn.getDate("Data Check-in");
+
+        System.out.println("Nome: " + nome + "\n" +
+                "Especie: " + esp + "\n" +
+                "Tutor: " + tutor + "\n" +
+                "Idade: " + idade + "\n" +
+                "Andar: " + andar + "\n" +
                 "Data Check-in: " + data + "\n");
     }
 
     public Document buscarDadosCheckIN(String nomeAnimal) {
         return checkInCollection.find(Filters.eq("Nome", nomeAnimal)).first();
     }
-
 
 }
